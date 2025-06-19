@@ -8,13 +8,13 @@ import           Text.Parsec
 
 parseBrainfuck :: Parsec Text () [BrainfuckToken]
 parseBrainfuck = many $
-    ignoreUntilValidToken *>
-    try (char '+' $> IncrementToken) <|>
-    try (char '-' $> DecrementToken) <|>
-    try (char '>' $> PointerIncrementToken) <|>
-    try (char '<' $> PointerDecrementToken) <|>
+    ignoreUntilValidToken                                        *>
+    try (char '+' $> IncrementToken)                             <|>
+    try (char '-' $> DecrementToken)                             <|>
+    try (char '>' $> PointerIncrementToken)                      <|>
+    try (char '<' $> PointerDecrementToken)                      <|>
     try (char '[' *> (LoopToken <$> parseBrainfuck) <* char ']') <|>
-    char '.' $> OutputToken <*
+        (char '.' $> OutputToken)                                <*
     ignoreUntilValidToken
 
     where ignoreUntilValidToken = void $ manyTill anyChar (oneOf "+-[]<>.")
