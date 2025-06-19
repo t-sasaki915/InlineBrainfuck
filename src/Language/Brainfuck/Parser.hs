@@ -9,17 +9,11 @@ module Language.Brainfuck.Parser
     , outputToken
     ) where
 
-import           Control.Monad (void)
-import           Data.Functor  (($>))
-import           Data.Text     (Text)
+import           Control.Monad      (void)
+import           Data.Functor       (($>))
+import           Data.Text          (Text)
+import           Language.Brainfuck (BrainfuckToken (..))
 import           Text.Parsec
-
-data BrainfuckToken = IncrementToken
-                    | DecrementToken
-                    | PointerIncrementToken
-                    | PointerDecrementToken
-                    | LoopToken [BrainfuckToken]
-                    | OutputToken
 
 parseBrainfuck :: Parsec Text () [BrainfuckToken]
 parseBrainfuck = many $

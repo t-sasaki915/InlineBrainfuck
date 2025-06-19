@@ -21,6 +21,7 @@ source-repository head
 library
   exposed-modules:
       Language.Brainfuck.Parser
+      Language.Brainfuck
   other-modules:
       Paths_InlineBrainfuck
   autogen-modules:
