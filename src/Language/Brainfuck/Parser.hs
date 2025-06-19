@@ -1,13 +1,4 @@
-module Language.Brainfuck.Parser
-    ( BrainfuckToken (..)
-    , parseBrainfuck
-    , incrementToken
-    , decrementToken
-    , pointerIncrementToken
-    , pointerDecrementToken
-    , loopToken
-    , outputToken
-    ) where
+module Language.Brainfuck.Parser (parseBrainfuck) where
 
 import           Control.Monad      (void)
 import           Data.Functor       (($>))
@@ -18,31 +9,12 @@ import           Text.Parsec
 parseBrainfuck :: Parsec Text () [BrainfuckToken]
 parseBrainfuck = many $
     ignoreUntilValidToken *>
-    try incrementToken <|>
-    try decrementToken <|>
-    try pointerIncrementToken <|>
-    try pointerDecrementToken <|>
-    try loopToken <|>
-    outputToken <*
+    try (char '+' $> IncrementToken) <|>
+    try (char '-' $> DecrementToken) <|>
+    try (char '>' $> PointerIncrementToken) <|>
+    try (char '<' $> PointerDecrementToken) <|>
+    try (char '[' *> (LoopToken <$> parseBrainfuck) <* char ']') <|>
+    char '.' $> OutputToken <*
     ignoreUntilValidToken
 
-incrementToken :: Parsec Text () BrainfuckToken
-incrementToken = char '+' $> IncrementToken
-
-decrementToken :: Parsec Text () BrainfuckToken
-decrementToken = char '-' $> DecrementToken
-
-pointerIncrementToken :: Parsec Text () BrainfuckToken
-pointerIncrementToken = char '>' $> PointerIncrementToken
-
-pointerDecrementToken :: Parsec Text () BrainfuckToken
-pointerDecrementToken = char '<' $> PointerDecrementToken
-
-loopToken :: Parsec Text () BrainfuckToken
-loopToken = char '[' *> (LoopToken <$> parseBrainfuck) <* char ']'
-
-outputToken :: Parsec Text () BrainfuckToken
-outputToken = char '.' $> OutputToken
-
-ignoreUntilValidToken :: Parsec Text () ()
-ignoreUntilValidToken = void $ manyTill anyChar (oneOf "+-[]<>.")
+    where ignoreUntilValidToken = void $ manyTill anyChar (oneOf "+-[]<>.")

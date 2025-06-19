@@ -13,5 +13,5 @@ instance Show BrainfuckToken where
     show DecrementToken        = "-"
     show PointerIncrementToken = ">"
     show PointerDecrementToken = "<"
-    show (LoopToken tokens)    = "[" ++ concat (map show tokens) ++ "]"
+    show (LoopToken tokens)    = "[" ++ concatMap show tokens ++ "]"
     show OutputToken           = "."
