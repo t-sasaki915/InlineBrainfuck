@@ -12,7 +12,7 @@ With compile-time syntax check:
 ```haskell
 {-# LANGUAGE QuasiQuotes #-}
 
-import Text.Brainfuck.QuasiQuote (brainfuck)
+import Text.Brainfuck.QuasiQuote (bf)
 
 main :: IO ()
-main = putStrLn [brainfuck|-[------->+<]>-.---.+++++++..+++.|] -- => HELLO
+main = putStrLn [bf|-[------->+<]>-.---.+++++++..+++.|] -- => HELLO
