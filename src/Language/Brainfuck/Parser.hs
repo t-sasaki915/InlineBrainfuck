@@ -23,7 +23,8 @@ parseBrainfuck = many $
     try pointerIncrementToken <|>
     try pointerDecrementToken <|>
     try loopToken <|>
-    outputToken
+    outputToken <*
+    ignoreUntilValidToken
 
 incrementToken :: Parsec Text () BrainfuckToken
 incrementToken = char '+' $> IncrementToken
