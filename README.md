@@ -6,7 +6,7 @@ A library for treating Brainfuck codes as Text or String
 import Text.Brainfuck (fromBrainfuck)
 
 main :: IO ()
-main = putStrLn $ fromBrainfuck "-[------->+<]>-.---.+++++++..+++." -- => HELLO
+main = putStrLn $ fromJust (fromBrainfuck "-[------->+<]>-.---.+++++++..+++.") -- => HELLO
 ```
 With compile-time syntax check:
 ```haskell
