@@ -1,5 +1,8 @@
 module Language.Brainfuck.Eval
-    ( BrainfuckState (..)
+    ( BrainfuckState
+    , getPointer
+    , getMemory
+    , getOutput
     , evalBrainfuck
     , evalBrainfuckTokens
     , evalBrainfuckToken

@@ -1,7 +1,10 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 module Language.Brainfuck.Eval.Internal
-    ( BrainfuckState (..)
+    ( BrainfuckState
+    , getPointer
+    , getMemory
+    , getOutput
     , initialBrainfuckState
     , currentPointer
     , setPointer
@@ -31,6 +34,15 @@ initialBrainfuckState =
         , _output  = ""
         }
 
+getPointer :: BrainfuckState -> Int
+getPointer = _pointer
+
+getMemory :: BrainfuckState -> Map Int Int
+getMemory = _memory
+
+getOutput :: BrainfuckState -> Text
+getOutput = _output
+
 makeLenses ''BrainfuckState
 
 currentPointer :: State BrainfuckState Int
@@ -42,7 +54,7 @@ setPointer newPointer = get >>= put . set pointer newPointer
 currentValue :: State BrainfuckState Int
 currentValue =
     currentPointer >>= \pointer' ->
-        getMemory >>= \memory' ->
+        currentMemory >>= \memory' ->
             case Map.lookup pointer' memory' of
                 Just value -> return value
                 Nothing    -> return 0
@@ -50,7 +62,7 @@ currentValue =
 setCurrentValue :: Int -> State BrainfuckState ()
 setCurrentValue newValue =
     currentPointer >>= \pointer' ->
-        getMemory >>= \memory' ->
+        currentMemory >>= \memory' ->
             if Map.member pointer' memory'
                 then setMemory (Map.update (const $ Just newValue) pointer' memory')
                 else setMemory (Map.insert pointer' newValue memory')
@@ -58,8 +70,8 @@ setCurrentValue newValue =
 appendToOutput :: Char -> State BrainfuckState ()
 appendToOutput c = get >>= put . over output (Text.cons c)
 
-getMemory :: State BrainfuckState (Map Int Int)
-getMemory = get >>= \state -> return (state ^. memory)
+currentMemory :: State BrainfuckState (Map Int Int)
+currentMemory = get >>= \state -> return (state ^. memory)
 
 setMemory :: Map Int Int -> State BrainfuckState ()
 setMemory newMemory = get >>= put . set memory newMemory
