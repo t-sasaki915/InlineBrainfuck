@@ -20,6 +20,8 @@ source-repository head
 
 library
   exposed-modules:
+      Data.String.Brainfuck
+      Data.Text.Brainfuck
       Language.Brainfuck.Eval.Internal
       Language.Brainfuck.Eval
       Language.Brainfuck.Parser

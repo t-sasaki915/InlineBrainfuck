@@ -3,16 +3,16 @@ A library for treating Brainfuck codes as Text or String
 
 ## Examples
 ```haskell
-import Text.Brainfuck (fromBrainfuck)
+import Data.String.Brainfuck (fromBrainfuck')
 
 main :: IO ()
-main = putStrLn $ fromJust (fromBrainfuck "-[------->+<]>-.---.+++++++..+++.") -- => HELLO
+main = putStrLn (fromBrainfuck' "-[------->+<]>-.---.+++++++..+++.") -- => HELLO
 ```
 With compile-time syntax check:
 ```haskell
 {-# LANGUAGE QuasiQuotes #-}
 
-import Text.Brainfuck.QuasiQuote (bf)
+import Data.String.Brainfuck.QuasiQuote (bf)
 
 main :: IO ()
 main = putStrLn [bf|-[------->+<]>-.---.+++++++..+++.|] -- => HELLO
