@@ -68,7 +68,7 @@ setCurrentValue newValue =
                 else setMemory (Map.insert pointer' newValue memory')
 
 appendToOutput :: Char -> State BrainfuckState ()
-appendToOutput c = get >>= put . over output (flip Text.snoc c)
+appendToOutput c = get >>= put . over output (`Text.snoc` c)
 
 currentMemory :: State BrainfuckState (Map Int Int)
 currentMemory = get >>= \state -> return (state ^. memory)
