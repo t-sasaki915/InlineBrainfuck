@@ -1,10 +1,13 @@
-module Language.Brainfuck.Parser (brainfuckParser) where
+module Language.Brainfuck.Parser (parseBrainfuck, brainfuckParser) where
 
 import           Control.Monad            (void)
 import           Data.Functor             (($>))
 import           Data.Text                (Text)
 import           Language.Brainfuck.Token (BrainfuckToken (..))
 import           Text.Parsec
+
+parseBrainfuck :: Text -> Either ParseError [BrainfuckToken]
+parseBrainfuck = parse (brainfuckParser <* eof) ""
 
 brainfuckParser :: Parsec Text () [BrainfuckToken]
 brainfuckParser = many $
