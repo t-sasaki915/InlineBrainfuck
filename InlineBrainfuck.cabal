@@ -48,6 +48,7 @@ test-suite InlineBrainfuck-test
   main-is: Spec.hs
   other-modules:
       Paths_InlineBrainfuck
+      Language.Brainfuck.EvalSpec
       Language.Brainfuck.ParserSpec
   autogen-modules:
       Paths_InlineBrainfuck
