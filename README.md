@@ -3,7 +3,7 @@ A library for treating Brainfuck codes as Text or String
 
 ## Examples
 ```haskell
-import Data.String.Brainfuck (fromBrainfuck')
+import Text.Brainfuck (fromBrainfuck')
 
 main :: IO ()
 main = putStrLn (fromBrainfuck' "-[------->+<]>-.---.+++++++..+++.") -- => HELLO
