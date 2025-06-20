@@ -5,7 +5,6 @@ module Language.Brainfuck.Eval
     , getOutput
     , evalBrainfuck
     , evalBrainfuckTokens
-    , evalBrainfuckToken
     ) where
 
 import           Control.Monad                    (unless)
@@ -20,30 +19,30 @@ evalBrainfuck :: [BrainfuckToken] -> BrainfuckState
 evalBrainfuck tokens = execState (evalBrainfuckTokens tokens) initialBrainfuckState
 
 evalBrainfuckTokens :: [BrainfuckToken] -> State BrainfuckState ()
-evalBrainfuckTokens = mapM_ evalBrainfuckToken
+evalBrainfuckTokens = mapM_ $ \case
+    IncrementToken ->
+        currentValue >>= \case
+            255 -> setCurrentValue 0
+            n   -> setCurrentValue (n + 1)
 
-evalBrainfuckToken :: BrainfuckToken -> State BrainfuckState ()
-evalBrainfuckToken IncrementToken =
-    currentValue >>= \case
-        255 -> setCurrentValue 0
-        n   -> setCurrentValue (n + 1)
+    DecrementToken ->
+        currentValue >>= \case
+            0 -> setCurrentValue 255
+            n -> setCurrentValue (n - 1)
 
-evalBrainfuckToken DecrementToken =
-    currentValue >>= \case
-        0 -> setCurrentValue 255
-        n -> setCurrentValue (n - 1)
+    PointerIncrementToken ->
+        currentPointer >>=
+            setPointer . (+ 1)
 
-evalBrainfuckToken PointerIncrementToken =
-    currentPointer >>= setPointer . (+ 1)
+    PointerDecrementToken ->
+        currentPointer >>= \pointer ->
+            unless (pointer == 0) $
+                setPointer (pointer - 1)
 
-evalBrainfuckToken PointerDecrementToken =
-    currentPointer >>= \pointer ->
-        unless (pointer == 0) $
-            setPointer (pointer - 1)
+    LoopToken loop ->
+        whileM_ (currentValue <&> (/= 0)) $
+            evalBrainfuckTokens loop
 
-evalBrainfuckToken (LoopToken loop) =
-    whileM_ (currentValue <&> (/= 0)) $
-        evalBrainfuckTokens loop
-
-evalBrainfuckToken OutputToken =
-    currentValue >>= appendToOutput . chr
+    OutputToken ->
+        currentValue >>=
+            appendToOutput . chr
