@@ -1,2 +1,7 @@
+import           Test.Hspec                    (hspec)
+
+import           Language.Brainfuck.ParserSpec (parserSpec)
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
+main = hspec $ do
+    parserSpec

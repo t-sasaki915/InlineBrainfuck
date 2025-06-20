@@ -1,20 +1,21 @@
-module Language.Brainfuck.Parser (parseBrainfuck) where
+module Language.Brainfuck.Parser (brainfuckParser) where
 
-import           Control.Monad      (void)
-import           Data.Functor       (($>))
-import           Data.Text          (Text)
-import           Language.Brainfuck (BrainfuckToken (..))
+import           Control.Monad            (void)
+import           Data.Functor             (($>))
+import           Data.Text                (Text)
+import           Language.Brainfuck.Token (BrainfuckToken (..))
 import           Text.Parsec
 
-parseBrainfuck :: Parsec Text () [BrainfuckToken]
-parseBrainfuck = many $
-    ignoreUntilValidToken                                        *>
-    try (char '+' $> IncrementToken)                             <|>
-    try (char '-' $> DecrementToken)                             <|>
-    try (char '>' $> PointerIncrementToken)                      <|>
-    try (char '<' $> PointerDecrementToken)                      <|>
-    try (char '[' *> (LoopToken <$> parseBrainfuck) <* char ']') <|>
-        (char '.' $> OutputToken)                                <*
-    ignoreUntilValidToken
+brainfuckParser :: Parsec Text () [BrainfuckToken]
+brainfuckParser = many $
+    ignoreUntilValidToken *>
+        ( try (char '+' $> IncrementToken)
+      <|> try (char '-' $> DecrementToken)
+      <|> try (char '>' $> PointerIncrementToken)
+      <|> try (char '<' $> PointerDecrementToken)
+      <|> try (char '[' *> (LoopToken <$> brainfuckParser) <* char ']')
+      <|>     (char '.' $> OutputToken)
+        )
+    <* ignoreUntilValidToken
 
-    where ignoreUntilValidToken = void $ manyTill anyChar (oneOf "+-[]<>.")
+    where ignoreUntilValidToken = void $ manyTill anyChar (lookAhead (void (oneOf "+-[]<>.") <|> eof))
