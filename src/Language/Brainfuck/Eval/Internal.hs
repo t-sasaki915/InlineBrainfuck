@@ -46,7 +46,7 @@ getOutput = _output
 makeLenses ''BrainfuckState
 
 currentPointer :: State BrainfuckState Int
-currentPointer = get >>= \state -> return (state ^. pointer)
+currentPointer = get >>= \state -> pure (state ^. pointer)
 
 setPointer :: Int -> State BrainfuckState ()
 setPointer newPointer = get >>= put . set pointer newPointer
@@ -56,8 +56,8 @@ currentValue =
     currentPointer >>= \pointer' ->
         currentMemory >>= \memory' ->
             case Map.lookup pointer' memory' of
-                Just value -> return value
-                Nothing    -> return 0
+                Just value -> pure value
+                Nothing    -> pure 0
 
 setCurrentValue :: Int -> State BrainfuckState ()
 setCurrentValue newValue =
@@ -71,7 +71,7 @@ appendToOutput :: Char -> State BrainfuckState ()
 appendToOutput c = get >>= put . over output (`Text.snoc` c)
 
 currentMemory :: State BrainfuckState (Map Int Int)
-currentMemory = get >>= \state -> return (state ^. memory)
+currentMemory = get >>= \state -> pure (state ^. memory)
 
 setMemory :: Map Int Int -> State BrainfuckState ()
 setMemory newMemory = get >>= put . set memory newMemory
